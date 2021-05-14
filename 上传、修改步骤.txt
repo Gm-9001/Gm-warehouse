@@ -5,3 +5,5 @@ $  git commit -m "项目测试"
 
 $ git push -u origin master
 
+$ git pull  origin master 远程同步到本地
+$ git pull --rebase origin master 远程同步到本地
