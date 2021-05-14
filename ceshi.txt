@@ -1,13 +1,17 @@
-git remote 本文件夹的远程仓库名字
+git remote  查看本文件夹的远程仓库名字
 
+没有就
 git init  本文件夹就变成了一个远程仓库文件
+
+然后
 
 添加本文件夹的远程仓库
 git remote add (远程仓库的名字 自定义)git@github.com:Gm-9001/（github仓库名字）.git
 
 git remote -v  可测试本文件远程仓库的链接
 
-上传文件
+
+上传文件 步骤
 git add .
 
 git commit -m "注释（可以任意）"
