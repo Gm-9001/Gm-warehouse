@@ -1,0 +1,27 @@
+git remote 本文件夹的远程仓库名字
+
+git init  本文件夹就变成了一个远程仓库文件
+
+添加本文件夹的远程仓库
+git remote add (远程仓库的名字 自定义)git@github.com:Gm-9001/（github仓库名字）.git
+
+git remote -v  可测试本文件远程仓库的链接
+
+上传文件
+git add .
+
+git commit -m "注释（可以任意）"
+
+git push origin（远程仓库名） master（要上传的分支）
+
+把本地库的内容推送到远程，使用
+git push -u origin（远程仓库名） master（要上传的分支）
+
+
+实际上是把当前分支master推送到远程，由于远程库是空的，我们第一次推送master分支时，加上 –u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，推送成功后，可以立刻在github页面中看到远程库的内容已经和本地一模一样了
+
+只要本地作了提交，就可以通过如下命令：git push origin master把本地master分支的最新修改推送到github上了
+
+以上完成之后 如果需要把远程仓库同步到 本地仓库 我们就要拉取最新数据到本地仓库，命令如下
+
+git pull  origin master
