@@ -1,6 +1,7 @@
 $ git add .
 
 $  git commit -m "项目测试"
+		会自动添加为修改文件的注释
 
 $ git push -u origin master
 
