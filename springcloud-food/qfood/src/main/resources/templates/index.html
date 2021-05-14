@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<!-- 引入bootstrap的css -->
+<link rel="stylesheet" href="../js/bootstrap/bootstrap3/css/bootstrap.css">
+<link rel="stylesheet" href="../js/bootstrap/bootstrap3/css/bootstrap-theme.css">
+<!-- 引入jquery的js -->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<!-- 引入bootstrap的js -->
+<script type="text/javascript" src="../js/bootstrap/bootstrap3/js/bootstrap.js"></script>
+<!-- 引入树的相关的css、js -->
+<link rel="stylesheet" href="../js/bootstrap/bootstrap-treeview/bootstrap-treeview.min.css">
+<script type="text/javascript" src="../js/bootstrap/bootstrap-treeview/bootstrap-treeview.min.js"></script>
+
+<!-- 引入选项卡的相关的css、js -->
+<link rel="stylesheet" href="../js/bootstrap/bootStrap-addTabs/bootstrap.addtabs.css">
+<script type="text/javascript" src="../js/bootstrap/bootStrap-addTabs/bootstrap.addtabs.min.js"></script>
+<style type="text/css">
+    body {
+        padding-top: 70px;
+    }
+</style>
+<body>
+<!--导航栏-->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">food</a>
+    </div>
+</nav>
+<!--整体结构-->
+<div class="container-fluid ">
+    <div class="row">
+        <!--树占用空间-->
+        <div class="col-md-2">
+            <!-- 树 -->
+            <div id="myTree"></div>
+        </div>
+        <!--选项卡占用空间-->
+        <div class="col-md-10">
+            <!-- 选项卡 -->
+            <div id="myTabs">
+                <!-- 新选项卡 -->
+                <ul class="nav nav-tabs">
+                    <li role="presentation" class="active">
+                        <a href="#home" role="tab" data-toggle="tab">欢迎</a>
+                    </li>
+                </ul>
+                <!-- 选项卡下内容 -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="home">
+                        <h1>欢迎使用</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(function () {
+        initTree();//初始化树
+    })
+
+    //初始化树
+    function initTree() {
+        $.ajax({
+            url: "../food2/queryTree",
+            type: "get",
+            success: function (data) {
+                $('#myTree').treeview({
+                    data: data,
+                    onNodeSelected: function (event, node) {
+                        $.addtabs({iframeHeight: 840});
+                        $.addtabs.add({
+                            id: node.id,
+                            title: node.text,
+                            url: node.url
+                        });
+                    }
+                })
+            }
+        })
+    }
+</script>
+</html>

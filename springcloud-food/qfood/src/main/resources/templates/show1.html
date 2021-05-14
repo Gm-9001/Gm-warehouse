@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="padding-right:20px">
+    <form class="form-horizontal" id="myForm">
+        <div class="form-group">
+            <label class="col-md-2 control-label">id</label>
+            <div class="col-md-4">
+                <input class="form-control" name="id" id="hx1" readonly>
+            </div>
+            <label class="col-md-2 control-label">名称</label>
+            <div class="col-md-4">
+                <input class="form-control" name="fname" id="hx2">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">价格</label>
+            <div class="col-md-4">
+                <input type="number" class="form-control" name="fprice" id="hx3">
+            </div>
+            <label class="col-md-2 control-label">类型</label>
+            <div class="col-md-4">
+                <select class="form-control" name="ftype" id="hx4">
+                    <option value="1">膨化食品</option>
+                    <option value="2">饮料</option>
+                    <option value="3">糖类</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">时间</label>
+            <div class="col-md-4">
+                <input class="form-control date" name="fdate" id="hx5">
+            </div>
+            <label class="col-md-2 control-label">状态</label>
+            <div class="col-md-4">
+                <input class="form-control" name="fstate" id="hx6">
+            </div>
+        </div>
+    </form>
+</div>
+
+
+</body>
+<script type="text/javascript">
+    $(function () {
+        date()
+    })
+
+    function date() {
+        $('.date').datetimepicker({
+            language: 'zh-CN',//显示中文
+            //format: 'yyyy-mm-dd hh:ii:ss',//显示格式
+            //minView: "day",//设置只显示到月份
+            format: 'yyyy-mm-dd',//显示格式
+            minView: "month",//设置只显示到月份
+            initialDate: new Date(),//初始化当前日期
+            autoclose: true,//选中自动关闭
+            todayBtn: true//显示今日按钮
+        });
+    }
+</script>
+</html>

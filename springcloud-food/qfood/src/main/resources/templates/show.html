@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<!-- 引入bootstrap的css -->
+<link rel="stylesheet" href="../js/bootstrap/bootstrap3/css/bootstrap.css">
+<link rel="stylesheet" href="../js/bootstrap/bootstrap3/css/bootstrap-theme.css">
+<!-- 引入jquery的js -->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<!-- 引入bootstrap的js -->
+<script type="text/javascript" src="../js/bootstrap/bootstrap3/js/bootstrap.js"></script>
+
+<!-- 引入boostrap的表格的css、js -->
+<link rel="stylesheet" href="../js/bootstrap/bootstrap-table/bootstrap-table.css">
+<script type="text/javascript" src="../js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
+<script type="text/javascript" src="../js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+<!-- 引入bootbox弹框的js -->
+<script type="text/javascript" src="../js/bootstrap/bootstrap-bootbox/bootbox.js"></script>
+
+<!-- 引入bootstrap的日期的css、js -->
+<link rel="stylesheet" href="../js/bootstrap/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="../js/bootstrap/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript"
+        src="../js/bootstrap/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<!-- 引入fileinput 文件上传的 css、js -->
+<link rel="stylesheet" href="../js/bootstrap/bootstrap-fileinput/css/fileinput.css">
+<script type="text/javascript" src="../js/bootstrap/bootstrap-fileinput/js/fileinput.js"></script>
+<script type="text/javascript" src="../js/bootstrap/bootstrap-fileinput/js/locales/zh.js"></script>
+<body>
+<div id="toolbar">
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="id1">名称：</label>
+            <input class="form-control" id="id1" placeholder="请输入">
+        </div>
+        <div class="form-group">
+            <label for="dd1">日期：</label>
+            <div class="input-group">
+                <input class="form-control date" id="dd1">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <input class="form-control date" id="dd2">
+            </div>
+        </div>
+        <button onclick="search()" class="btn btn-primary glyphicon glyphicon-search" type="button">搜索</button>
+        <button onclick="openAdd()" class="btn btn-primary glyphicon glyphicon-plus" type="button">新增</button>
+        <button onclick="del()" class="btn btn-danger glyphicon glyphicon-trash" type="button">批删</button>
+    </form>
+</div>
+<div style="width: 1200px">
+    <table class="table" id="myTable"></table>
+</div>
+</body>
+<script>
+    $(function () {
+        queryTable()
+        $('.date').datetimepicker({
+            language: 'zh-CN',//显示中文
+            format: 'yyyy-mm-dd',//显示格式
+            minView: "month",//设置只显示到月份
+            initialDate: new Date(),//初始化当前日期
+            autoclose: true,//选中自动关闭
+            todayBtn: true//显示今日按钮
+        });
+    })
+
+    //初始化用户列表
+    function queryTable() {
+        $('#myTable').bootstrapTable({
+            toolbar: '#toolbar',//工具栏
+            url: '../food2/queryList',//获取数据地址
+            pagination: true, //是否展示分页
+            pageList: [2, 4, 6, 8, 10],//分页组件
+            pageSize: 2,
+            sidePagination: 'client',
+            striped: true,//斑马线
+            queryParams: function () {
+                var id1 = $("#id1").val();
+                var dd1 = $("#dd1").val();
+                var dd2 = $("#dd2").val();
+                return {
+                    fname: id1,
+                    startTime: dd1,
+                    endTime: dd2
+                };
+            },
+            columns: [
+                {field: "checkbox", checkbox: true},
+                {field: "id", title: "id", align: 'center'},
+                {field: "fname", title: "名称", align: 'center'},
+                {field: "fprice", title: "价格", align: 'center'},
+                {
+                    field: "ftype", title: "类型", align: 'center', formatter: function (value, row, index) {
+                        if (value == 1) {
+                            return "膨化食品"
+                        } else if (value == 2) {
+                            return "饮料"
+                        } else if (value == 3) {
+                            return "糖类"
+                        }
+                    }
+                },
+                {field: "fdate", title: "日期", align: 'center'},
+                {
+                    field: "fstate", title: "状态", align: 'center', formatter: function (value, row, index) {
+                        if (value == 1) {
+                            return "热销中"
+                        } else if (value == 2) {
+                            return "已下架"
+                        }
+                    }
+                },
+                {
+                    field: "tool", title: "操作", align: 'center', formatter: function (value, row, index) {
+                        var str = ""
+                        str += " <button type='button' class='btn btn-warning' onclick='upOne(" + row.id + ")'>修改</button>";
+                        str += "  <button type='button' class='btn btn-danger glyphicon glyphicon-trash' onclick='delOne(" + row.id + ")'>删除</button>";
+                        return str;
+                    }
+                }
+            ]
+        });
+    }
+
+    //条查
+    function search() {
+        $('#myTable').bootstrapTable("refresh");
+    }
+
+    var res;
+
+    function createAddContent(url) {
+        $.ajax({
+            url: url,
+            async: false,//同步
+            success: function (data) {
+                res = data;
+            }
+        });
+        return res;
+    }
+
+    //打开弹框
+    function openAdd() {
+        //先打开弹框
+        bootbox.dialog({
+            title: '新增',
+            message: createAddContent("../page/show1"),
+            closeButton: true,
+            buttons: {
+                "success": {
+                    "label": "<i class='icon-ok'></i> 保存",
+                    "className": "btn-sm btn-success",
+                    "callback": function () {//回调函数
+                        $.ajax({
+                            url: "../food2/apfood",
+                            type: 'post',
+                            data: $("#myForm").serialize(),//表单序列化
+                            success: function () {
+                                search()
+                            }
+                        });
+                    }
+                },
+                "cancel": {
+                    "label": "<i class='icon-info'></i> 取消",
+                    "className": "btn-sm btn-danger"
+                }
+            }
+        });
+    }
+
+    //修改
+    function upOne(id) {
+        //先打开弹框
+        bootbox.dialog({
+            title: '修改',
+            message: createAddContent("../page/show1"),
+            closeButton: true,
+            buttons: {
+                "success": {
+                    "label": "<i class='icon-ok'></i> 保存",
+                    "className": "btn-sm btn-success",
+                    "callback": function () {//回调函数
+                        //提交表单
+                        $.ajax({
+                            url: "../food2/apfood",
+                            type: 'post',
+                            data: $("#myForm").serialize(),//表单序列化
+                            success: function () {
+                                search()
+                            }
+                        });
+                    }
+                },
+                "cancel": {
+                    "label": "<i class='icon-info'></i> 取消",
+                    "className": "btn-sm btn-danger"
+                }
+            }
+
+        });
+        //回显数据：ajax查询回显数据
+        $.ajax({
+            url: "../food2/findById",
+            type: 'get',
+            data: {id: id},//用户id
+            async: false,//同步
+            success: function (data) {
+                //回显数据
+                $("#hx1").val(data.id);
+                $("#hx2").val(data.fname);
+                $("#hx3").val(data.fprice);
+                $("#hx4").val(data.ftype);
+                $("#hx5").val(data.fdate);
+                $("#hx6").val(data.fstate);
+            }
+        });
+    }
+
+    //单删
+    function delOne(id) {
+        bootbox.confirm({
+            size: "small",
+            title: "提示",
+            message: "是否确认删除？",
+            buttons: {
+                confirm: {
+                    label: '确定',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: '取消',
+                    className: 'btn-success'
+                }
+            },
+            callback: function (result) {
+                if (result) {//删除
+                    //调用ajax请求后台，回调刷新表格
+                    $.ajax({
+                        url: "../food2/del",
+                        type: 'post',
+                        data: {ids: id},
+                        success: function () {
+                            bootbox.alert({
+                                size: "small",
+                                title: "提示",
+                                message: "删除成功"
+                            })
+                            search();
+                        }
+                    });
+                }
+            }
+        })
+
+
+    }
+
+    //批量删除
+    function del() {
+        //获取选中的行
+        var arr = $('#myTable').bootstrapTable("getSelections");
+        if (arr == null || arr.length <= 0) {
+            bootbox.alert({
+                size: "small",
+                title: "提示",
+                message: "请至少选中一条"
+            })
+            return;
+        }
+        var ids = "";
+        for (var i = 0; i < arr.length; i++) {
+            ids += ids == "" ? arr[i].id : "," + arr[i].id;
+        }
+        bootbox.confirm({
+            size: "small",
+            title: "提示",
+            message: "是否确认删除？",
+            buttons: {
+                confirm: {
+                    label: '确定',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: '取消',
+                    className: 'btn-success'
+                }
+            },
+            callback: function (result) {
+                if (result) {//删除
+                    //调用ajax请求后台，回调刷新表格
+                    $.ajax({
+                        url: "../food2/del",
+                        type: "post",
+                        data: {ids: ids},
+                        success: function (data) {
+                            bootbox.alert({
+                                size: "small",
+                                title: "提示",
+                                message: "删除成功"
+                            })
+                            search();
+                        }
+                    })
+                }
+            }
+        })
+    }
+</script>
+</html>

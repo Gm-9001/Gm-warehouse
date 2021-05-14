@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.dao.FoodDao2">
+    <select id="queryTree" resultType="com.jk.bean.TreeBean">
+        select * from f_tree where pid=#{pid}
+    </select>
+    <select id="queryList" resultType="com.jk.bean.FoodBean">
+        select * from f_food
+        <include refid="tc"></include>
+    </select>
+    <sql id="tc">
+        <where>
+            1=1
+    <if test="startTime !=null and startTime != ''">
+        and fdate &gt;= #{startTime}
+    </if>
+    <if test="endTime !=null and endTime !=''">
+        and fdate &lt;= #{endTime}
+    </if>
+    <if test="fname !=null  and fname != '' ">
+        and fname like '%${fname}%'
+    </if>
+        </where>
+    </sql>
+
+    <insert id="addfood">
+        insert into f_food values(0,#{fname},#{fprice},#{ftype},#{fdate},#{fstate})
+    </insert>
+    <update id="updatefood">
+        update f_food set
+        fname =#{fname},
+        fprice =#{fprice},
+        ftype=#{ftype},
+        fdate=#{fdate},
+        fstate =#{fstate}
+        where id=#{id}
+    </update>
+
+    <select id="findById" resultType="com.jk.bean.FoodBean">
+        select * from f_food  where id=#{id}
+    </select>
+
+    <delete id="del">
+        delete from  f_food where id =#{id}
+    </delete>
+
+
+</mapper>
